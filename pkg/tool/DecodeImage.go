@@ -9,8 +9,9 @@ import (
 
 func DecodeImage(Pixels *[][]model.Node) (XMax int, YMax int) {
 	//fileName := "1.png"
-	fileName := "1(Small).png"
+	//fileName := "1(Small).png"
 	//fileName := "t.png"
+	fileName := "map.png"
 	//fileName := "map(Small).png"
 	//fileName := "test.png"
 	//fileName := "1(Mid).png"

@@ -13,12 +13,6 @@ let TypeMap = new Map([
 ]);
 
 export default function IndexPage() {
-  let [pixels, setPixels] = useState({
-    Pixels: [[{ X: 0, Y: 0, R: 0, G: 0, B: 0, A: 0 }]],
-    XMax: 0,
-    YMax: 0,
-  });
-
   const [rects, setRects] = useState([
     {
       X: 0,
@@ -26,7 +20,15 @@ export default function IndexPage() {
       Width: 10000,
       Color: 'white',
     },
+    {
+      X: 0,
+      Y: 0,
+      Width: 0,
+      Color: 'white',
+    },
   ]);
+
+  const [start, setStart] = useState();
 
   const url = 'https://maogai.obs.cn-north-4.myhuaweicloud.com/map.png';
   const [image, status] = useImage(url);
@@ -45,7 +47,7 @@ export default function IndexPage() {
 
   function createRect(x: number, y: number, width: number, color: string) {
     setRects([
-      ...rects,
+      ...rects.slice(0, rects.length - 1),
       {
         X: x,
         Y: y,
@@ -54,6 +56,24 @@ export default function IndexPage() {
       },
     ]);
   }
+
+  let { loading, value: pixels = {} } = useAsync(async () => {
+    try {
+      var r = await request.post('/api', {
+        data: {
+          jsonrpc: '2.0',
+          method: 'NodeService.GetPixels',
+          params: {},
+          id: 1,
+        },
+      });
+    } catch (e) {
+      console.log(e);
+    }
+    return r.result;
+  });
+
+  !loading && console.log(pixels.Pixels);
 
   // 更改颜色函数调用举例
   // changeColor([
@@ -77,6 +97,7 @@ export default function IndexPage() {
           fontWeight: 700,
           textAlign: 'center',
         }}
+        onClick={() => {}}
       >
         校园导览系统预览
       </div>
@@ -84,7 +105,7 @@ export default function IndexPage() {
         style={{
           width: '80%',
           margin: 'auto',
-          maxHeight: '1000px',
+          maxHeight: '600px',
           overflowX: 'scroll',
           overflowY: 'scroll',
           border: '7px solid rgb(61,166,250)',
@@ -102,8 +123,8 @@ export default function IndexPage() {
       >
         <Stage
           style={{ border: '2px', borderColor: 'blue' }}
-          width={8499}
-          height={6024}
+          width={2040}
+          height={1446}
         >
           <Layer ref={Lay}>
             {rects.map((value, index) => {
@@ -128,19 +149,3 @@ export default function IndexPage() {
     </div>
   );
 }
-
-// useAsync(async () => {
-//   request
-//     .post('/api', {
-//       data: {
-//         jsonrpc: '2.0',
-//         method: 'NodeService.GetPixels',
-//         params: {},
-//         id: 1,
-//       },
-//     })
-//     .then(r => {
-//       setPixels(r.result);
-//     })
-//
-// }, []);
