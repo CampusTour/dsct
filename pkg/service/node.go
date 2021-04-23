@@ -30,8 +30,9 @@ func (c *NodeService) TestConnected(r *http.Request, req *TestConnectedReq, res 
 type GetPixelsReq struct {
 }
 type GetPixelsRes struct {
-	XMax   int
-	YMax   int
+	XMax int
+	YMax int
+
 	Pixels [][]model.Node
 }
 

@@ -10,6 +10,8 @@ import (
 func DecodeImage(Pixels *[][]model.Node) (XMax int, YMax int) {
 	//fileName := "1.png"
 	fileName := "1(Small).png"
+	//fileName := "t.png"
+	//fileName := "map(Small).png"
 	//fileName := "test.png"
 	//fileName := "1(Mid).png"
 	file, err := os.Open(fileName)
@@ -35,6 +37,7 @@ func DecodeImage(Pixels *[][]model.Node) (XMax int, YMax int) {
 	//}
 
 	for i := img.Bounds().Min.X; i < img.Bounds().Max.X; i++ {
+		//var nodes []model.Node = make([]model.Node, img.Bounds().Max.X*img.Bounds().Max.Y)
 		var nodes []model.Node
 		for j := img.Bounds().Min.Y; j < img.Bounds().Max.Y; j++ {
 			r, g, b, a := img.At(j, i).RGBA()
@@ -47,6 +50,9 @@ func DecodeImage(Pixels *[][]model.Node) (XMax int, YMax int) {
 				A: int32(a),
 			}
 			nodes = append(nodes, node)
+			//if r!=0 || g != 0 || b != 0 {
+			//	fmt.Printf("(%v, %v)'s color: r: %v, g: %v, b: %v, a: %v\n", i, j, r, g, b, a)
+			//}
 			fmt.Printf("(%v, %v)'s color: r: %v, g: %v, b: %v, a: %v\n", i, j, r, g, b, a)
 		}
 		*Pixels = append(*Pixels, nodes)

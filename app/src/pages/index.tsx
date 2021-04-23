@@ -1,7 +1,8 @@
-import React, {useRef, useState} from 'react';
+import React, { useRef, useState } from 'react';
 import request from 'umi-request';
-import {useAsync} from 'react-use';
-import {Layer, Rect, Stage} from 'react-konva';
+import { useAsync } from 'react-use';
+import { Layer, Rect, Stage, Image } from 'react-konva';
+import useImage from 'use-image';
 
 let TypeMap = new Map([
   [0, 'black'],
@@ -18,21 +19,17 @@ export default function IndexPage() {
     YMax: 0,
   });
 
-  useAsync(async () => {
-    request
-      .post('/api', {
-        data: {
-          jsonrpc: '2.0',
-          method: 'NodeService.GetPixels',
-          params: {},
-          id: 1,
-        },
-      })
-      .then(r => {
-        setPixels(r.result);
-      })
+  const [rects, setRects] = useState([
+    {
+      X: 0,
+      Y: 0,
+      Width: 10000,
+      Color: 'white',
+    },
+  ]);
 
-  }, []);
+  const url = 'https://maogai.obs.cn-north-4.myhuaweicloud.com/map.png';
+  const [image, status] = useImage(url);
 
   const Lay = useRef(null);
   const Rec = useRef(null);
@@ -44,6 +41,18 @@ export default function IndexPage() {
     }
     // @ts-ignore
     Lay.current.draw();
+  }
+
+  function createRect(x: number, y: number, width: number, color: string) {
+    setRects([
+      ...rects,
+      {
+        X: x,
+        Y: y,
+        Width: width,
+        Color: color,
+      },
+    ]);
   }
 
   // 更改颜色函数调用举例
@@ -59,8 +68,6 @@ export default function IndexPage() {
   //   { x: 1, y: 8 },
   // ]);
 
-  console.log(pixels);
-
   return (
     <div>
       <div
@@ -71,19 +78,8 @@ export default function IndexPage() {
           textAlign: 'center',
         }}
       >
-        校园导览系统模块化预览
+        校园导览系统预览
       </div>
-      <div
-        style={{
-          margin: 'auto',
-          fontSize: '36px',
-          fontWeight: 500,
-          textAlign: 'center',
-        }}
-      >
-        ①地图像素栅格化
-      </div>
-      <br />
       <div
         style={{
           width: '80%',
@@ -93,54 +89,38 @@ export default function IndexPage() {
           overflowY: 'scroll',
           border: '7px solid rgb(61,166,250)',
         }}
+        onClick={(event) => {
+          console.log(Math.floor(event.nativeEvent.offsetX / 10));
+          console.log(Math.floor(event.nativeEvent.offsetY / 10));
+          createRect(
+            Math.floor(event.nativeEvent.offsetX / 10),
+            Math.floor(event.nativeEvent.offsetY / 10),
+            10,
+            'blue',
+          );
+        }}
       >
         <Stage
           style={{ border: '2px', borderColor: 'blue' }}
-          width={pixels.XMax * 10}
-          height={pixels.YMax * 10}
+          width={8499}
+          height={6024}
         >
           <Layer ref={Lay}>
-            {pixels.Pixels.map((value, index) => {
-              return value.map((value1, index1) => {
-                if (value1.R == 0) {
-                  return (
-                    <Rect
-                      onClick={(evt) => {
-                        // @ts-ignore
-                        evt.currentTarget.fill('red');
-                        // @ts-ignore
-                        Lay.current.draw();
-                      }}
-                      ref={Rec}
-                      id={'rect' + value1.X.toString() + value1.Y.toString()}
-                      key={index1}
-                      x={value1.X * 10}
-                      y={value1.Y * 10}
-                      width={10}
-                      height={10}
-                      fill="white"
-                    />
-                  );
-                } else {
-                  return (
-                    <Rect
-                      onClick={(evt) => {
-                        // @ts-ignore
-                        evt.currentTarget.fill('red');
-                        // @ts-ignore
-                        Lay.current.draw();
-                      }}
-                      id={'rect' + value1.X.toString() + value1.Y.toString()}
-                      key={index1}
-                      x={value1.X * 10}
-                      y={value1.Y * 10}
-                      width={10}
-                      height={10}
-                      fill="black"
-                    />
-                  );
-                }
-              });
+            {rects.map((value, index) => {
+              if (index == 0) {
+                return <Image key={index} image={image} />;
+              } else {
+                return (
+                  <Rect
+                    key={index}
+                    x={value.X * value.Width}
+                    y={value.Y * value.Width}
+                    width={value.Width}
+                    height={value.Width}
+                    fill={value.Color}
+                  />
+                );
+              }
             })}
           </Layer>
         </Stage>
@@ -148,3 +128,19 @@ export default function IndexPage() {
     </div>
   );
 }
+
+// useAsync(async () => {
+//   request
+//     .post('/api', {
+//       data: {
+//         jsonrpc: '2.0',
+//         method: 'NodeService.GetPixels',
+//         params: {},
+//         id: 1,
+//       },
+//     })
+//     .then(r => {
+//       setPixels(r.result);
+//     })
+//
+// }, []);
