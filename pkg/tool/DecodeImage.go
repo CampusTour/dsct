@@ -2,6 +2,7 @@ package tool
 
 import (
 	"dsct/pkg/model"
+	"encoding/json"
 	"fmt"
 	"image/png"
 	"os"
@@ -32,31 +33,38 @@ func DecodeImage(Pixels *[][]model.Node) (XMax int, YMax int) {
 	if err != nil {
 		fmt.Printf("open file %v failed: -> %v", fileName, err)
 	}
-	//imgConfig, err := png.DecodeConfig(file)
-	//if err != nil {
-	//	fmt.Printf("image decode config failed: -> %v", err)
-	//}
+
+	var Map [][]int8
 
 	for i := img.Bounds().Min.X; i < img.Bounds().Max.X; i++ {
 		//var nodes []model.Node = make([]model.Node, img.Bounds().Max.X*img.Bounds().Max.Y)
-		var nodes []model.Node
+		var nodes []int8
 		for j := img.Bounds().Min.Y; j < img.Bounds().Max.Y; j++ {
-			r, g, b, a := img.At(j, i).RGBA()
-			node := model.Node{
-				X: int16(i),
-				Y: int16(j),
-				R: int32(r),
-				G: int32(g),
-				B: int32(b),
-				A: int32(a),
+			r, _, b, _ := img.At(j, i).RGBA()
+			//fmt.Printf("%v %v %v\n", r, g, b)
+			var tp int8
+			if r != 0 && b == 0 {
+				tp = 0
+			} else {
+				tp = 1
 			}
-			nodes = append(nodes, node)
-			//if r!=0 || g != 0 || b != 0 {
-			//	fmt.Printf("(%v, %v)'s color: r: %v, g: %v, b: %v, a: %v\n", i, j, r, g, b, a)
-			//}
-			fmt.Printf("(%v, %v)'s color: r: %v, g: %v, b: %v, a: %v\n", i, j, r, g, b, a)
+			nodes = append(nodes, tp)
 		}
-		*Pixels = append(*Pixels, nodes)
+		Map = append(Map, nodes)
 	}
+	//buf, err := json.MarshalIndent(Pixels, "", "  ")
+	buf, err := json.Marshal(Map)
+
+	fileName = "pixels.js"
+	dstFile, err := os.Create(fileName)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	defer dstFile.Close()
+	s := "var pixels = " + string(buf)
+
+	dstFile.WriteString(s)
+
 	return img.Bounds().Dx(), img.Bounds().Dy()
 }
