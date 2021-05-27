@@ -36,17 +36,20 @@ func DecodeImage(Pixels *[][]model.Node) (XMax int, YMax int) {
 
 	var Map [][]int8
 
-	for i := img.Bounds().Min.X; i < img.Bounds().Max.X; i++ {
+	for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x++ {
 		//var nodes []model.Node = make([]model.Node, img.Bounds().Max.X*img.Bounds().Max.Y)
 		var nodes []int8
-		for j := img.Bounds().Min.Y; j < img.Bounds().Max.Y; j++ {
-			r, _, b, _ := img.At(j, i).RGBA()
+		for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y++ {
+			r, _, b, _ := img.At(x, y).RGBA()
 			//fmt.Printf("%v %v %v\n", r, g, b)
 			var tp int8
 			if r != 0 && b == 0 {
 				tp = 0
 			} else {
 				tp = 1
+			}
+			if tp != 0 && tp != 1 {
+				println(tp)
 			}
 			nodes = append(nodes, tp)
 		}
