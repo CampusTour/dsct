@@ -1,19 +1,18 @@
 package service
 
 import (
-	"dsct/pkg/model"
-	"dsct/pkg/tool"
-	"gorm.io/gorm"
+	model "dsct/pkg/model"
+	"fmt"
 	"net/http"
 )
 
 // NodeService 1. 定义服务
 type NodeService struct {
-	Db *gorm.DB
+	Map *model.Plat
 }
 
-func NewNodeService(db *gorm.DB) *NodeService {
-	return &NodeService{Db: db}
+func NewNodeService(thisMap *model.Plat) *NodeService {
+	return &NodeService{Map: thisMap}
 }
 
 type TestConnectedReq struct {
@@ -38,6 +37,32 @@ type GetPixelsRes struct {
 
 //获取像素点
 func (c *NodeService) GetPixels(r *http.Request, req *GetPixelsReq, res *GetPixelsRes) error {
-	res.XMax, res.YMax = tool.DecodeImage(&res.Pixels)
+	return nil
+}
+
+type GetRoutesReq struct {
+	StartX int `json:"start_x"`
+	StartY int `json:"start_y"`
+	EndX   int `json:"end_x"`
+	EndY   int `json:"end_y"`
+}
+type GetRoutesRes struct {
+	Road []model.Point
+}
+
+func (c *NodeService) GetRoute(r *http.Request, req *GetRoutesReq, res *GetRoutesRes) error {
+	searchRoad := model.NewSearchRoad(req.StartX, req.StartY, req.EndX, req.EndY, c.Map)
+
+	if searchRoad.FindoutRoad() {
+		fmt.Println("success")
+	} else {
+		fmt.Println("failed！")
+	}
+
+	var road []model.Point
+	for _, item := range searchRoad.TheRoad {
+		road = append(road, item.Point)
+	}
+	res.Road = road
 	return nil
 }

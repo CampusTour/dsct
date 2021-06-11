@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://unpkg.com/konva@4.0.0/konva.min.js"></script>
+  <!-- 地图 -->
+  <script src="pixels.js"></script>
+  <script src="./js/navigate.js"></script>
+  <script src="./js/setting.js"></script>
+  <title>Document</title>
+</head>
+
+<body>
+  <br />
+  <div style="padding-left: 5%; padding-right: 5%">
+    <div id="root" style="width: 100%; max-width: 2040px; height: 1000px; overflow: scroll">
+      <div id="container"></div>
+    </div>
+    <div style="position: relative">
+      <button style="float: left" id="move">开始移动</button>
+    </div>
+  </div>
+</body>
+
+<!-- 生成基本 -->
+<script>
+
+
+  // var imageObj2 = new Image();
+  // imageObj2.onload = function () {
+  //   const yoda = new Konva.Image({
+  //     image: imageObj2,
+  //     opacity: 0.5
+  //   });
+  //   mapLayer.add(yoda);
+  //   mapLayer.batchDraw();
+  // };
+  // mapObj.src = "map.png";
+
+
+</script>
+
+<!-- 变量、类 -->
+<script>
+
+</script>
+
+
+<!-- 点击生成Point -->
+<script>
+  {
+    {/* for (let i = 0; i < 2040; i++) {
+      for (let j = 0; j < 1446; j++) {
+        const point = {
+          x: Number(i),
+          y: Number(j),
+        };
+        pixels[point.x][point.y] === 0 && drawPoint(point, "blue");
+      }
+    } */}
+  }
+</script>
+
+
+<!-- 操控 -->
+<script>
+  $("#move").click((e)=>{
+    console.log("123")
+    move()
+  })
+</script>
+
+</html>

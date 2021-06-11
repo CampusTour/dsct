@@ -1,0 +1,81 @@
+package model
+
+import "container/heap"
+
+type SearchRoad struct {
+	theMap  *Plat
+	start   _AstarPoint
+	end     _AstarPoint
+	closeLi map[string]*_AstarPoint
+	openLi  OpenList
+	openSet map[string]*_AstarPoint
+	TheRoad []*_AstarPoint
+}
+
+func NewSearchRoad(startx, starty, endx, endy int, m *Plat) *SearchRoad {
+	sr := &SearchRoad{}
+	sr.theMap = m
+	sr.start = *NewAstarPoint(&Point{startx, starty, Start}, nil, nil)
+	sr.end = *NewAstarPoint(&Point{endx, endy, End}, nil, nil)
+	sr.TheRoad = make([]*_AstarPoint, 0)
+	sr.openSet = make(map[string]*_AstarPoint, m.maxX+m.maxY)
+	sr.closeLi = make(map[string]*_AstarPoint, m.maxX+m.maxY)
+
+	heap.Init(&sr.openLi)
+	heap.Push(&sr.openLi, &sr.start) // 首先把起点加入开放列表
+	sr.openSet[pointAsKey(sr.start.X, sr.start.Y)] = &sr.start
+	// 将障碍点放入关闭列表
+	for k, v := range m.blocks {
+		sr.closeLi[k] = NewAstarPoint(v, nil, nil)
+	}
+
+	return sr
+}
+
+func (this *SearchRoad) FindoutRoad() bool {
+	for len(this.openLi) > 0 {
+		// 将节点从开放列表移到关闭列表当中。
+		x := heap.Pop(&this.openLi)
+		curPoint := x.(*_AstarPoint)
+		delete(this.openSet, pointAsKey(curPoint.X, curPoint.Y))
+		this.closeLi[pointAsKey(curPoint.X, curPoint.Y)] = curPoint
+
+		adjacs := this.theMap.getAdjacentPoint(&curPoint.Point)
+		for _, p := range adjacs {
+			theAP := NewAstarPoint(p, curPoint, &this.end)
+			if pointAsKey(theAP.X, theAP.Y) == pointAsKey(this.end.X, this.end.Y) {
+				// 找出路径了, 标记路径
+				for theAP.father != nil {
+					this.TheRoad = append(this.TheRoad, theAP)
+					theAP.Type = Unblock
+					theAP = theAP.father
+				}
+				return true
+			}
+
+			_, ok := this.closeLi[pointAsKey(p.X, p.Y)]
+			if ok {
+				continue
+			}
+
+			existAP, ok := this.openSet[pointAsKey(p.X, p.Y)]
+			if !ok {
+				heap.Push(&this.openLi, theAP)
+				this.openSet[pointAsKey(theAP.X, theAP.Y)] = theAP
+			} else {
+				oldGVal, oldFather := existAP.gVal, existAP.father
+				existAP.father = curPoint
+				existAP.calcGVal()
+				// 如果新的节点的G值还不如老的节点就恢复老的节点
+				if existAP.gVal > oldGVal {
+					// restore father
+					existAP.father = oldFather
+					existAP.gVal = oldGVal
+				}
+			}
+
+		}
+	}
+
+	return false
+}
