@@ -52,6 +52,7 @@ stage.add(routeLayer);
 stage.add(userLayer);
 
 $("#root").click(function (e) {
+  quit();
   if (moving) return;
   const point = {
     x: Number(e.offsetX.toFixed()),
@@ -65,9 +66,8 @@ $("#root").click(function (e) {
   // path = navigateTimeFirst(current, point);
 
   // 显示加载
-  getRoute(current.x, current.y, point.x, point.y).then((Road) => {
+  getRoute(0, current.x, current.y, point.x, point.y).then((Road) => {
     path = Road.map((value) => ({ x: value.X, y: value.Y })).reverse();
-    console.log(path);
     // 关闭加载
     showPath(path);
   });

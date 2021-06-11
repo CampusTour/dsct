@@ -7,14 +7,16 @@ import (
 	"os"
 )
 
-func DecodeImage(Pixels *[][]model.Node) (Map [][]int) {
-	//fileName := "1.png"
-	//fileName := "1(Small).png"
-	//fileName := "t.png"
-	fileName := "map.png"
-	//fileName := "map(Small).png"
-	//fileName := "test.png"
-	//fileName := "1(Mid).png"
+func DecodeImage(Pixels *[][]model.Node, index int) (Map [][]int) {
+	var fileName string
+
+	switch index {
+	case 0:
+		fileName = "map.png"
+	case 1:
+		fileName = "map2.png"
+	}
+
 	file, err := os.Open(fileName)
 	if err != nil {
 		fmt.Printf("open file %v failed: -> %v", fileName, err)

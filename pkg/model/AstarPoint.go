@@ -2,7 +2,7 @@ package model
 
 import "math"
 
-type OpenList []*_AstarPoint
+type OpenList []*AstarPoint
 
 func (self OpenList) Len() int           { return len(self) }
 func (self OpenList) Less(i, j int) bool { return self[i].fVal < self[j].fVal }
@@ -11,7 +11,7 @@ func (self OpenList) Swap(i, j int)      { self[i], self[j] = self[j], self[i] }
 func (this *OpenList) Push(x interface{}) {
 	// Push and Pop use pointer receivers because they modify the slice's length,
 	// not just its contents.
-	*this = append(*this, x.(*_AstarPoint))
+	*this = append(*this, x.(*AstarPoint))
 }
 
 func (this *OpenList) Pop() interface{} {
@@ -22,23 +22,23 @@ func (this *OpenList) Pop() interface{} {
 	return x
 }
 
-type _AstarPoint struct {
+type AstarPoint struct {
 	Point
-	father *_AstarPoint
+	father *AstarPoint
 	gVal   int
 	hVal   int
 	fVal   int
 }
 
-func NewAstarPoint(p *Point, father *_AstarPoint, end *_AstarPoint) (ap *_AstarPoint) {
-	ap = &_AstarPoint{*p, father, 0, 0, 0}
+func NewAstarPoint(p *Point, father *AstarPoint, end *AstarPoint, addition interface{}) (ap *AstarPoint) {
+	ap = &AstarPoint{*p, father, 0, 0, 0}
 	if end != nil {
-		ap.calcFVal(end)
+		ap.calcFVal(end, addition)
 	}
 	return ap
 }
 
-func (this *_AstarPoint) calcGVal() int {
+func (this *AstarPoint) calcGVal() int {
 	if this.father != nil {
 		deltaX := math.Abs(float64(this.father.X - this.X))
 		deltaY := math.Abs(float64(this.father.Y - this.Y))
@@ -55,12 +55,12 @@ func (this *_AstarPoint) calcGVal() int {
 	return this.gVal
 }
 
-func (this *_AstarPoint) calcHVal(end *_AstarPoint) int {
+func (this *AstarPoint) calcHVal(end *AstarPoint) int {
 	this.hVal = int(math.Abs(float64(end.X-this.X)) + math.Abs(float64(end.Y-this.Y)))
 	return this.hVal
 }
 
-func (this *_AstarPoint) calcFVal(end *_AstarPoint) int {
-	this.fVal = this.calcGVal() + this.calcHVal(end)
+func (this *AstarPoint) calcFVal(end *AstarPoint, addition interface{}) int {
+	this.fVal = this.calcGVal() + this.calcHVal(end) + addition.(int)
 	return this.fVal
 }

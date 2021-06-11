@@ -12,9 +12,22 @@ import (
 )
 
 func main() {
+	a := 12
+	for i := 0; i < 20; i++ {
+		a = a >> 1
+		println(a)
+	}
+
 	var Pixels [][]model.Node
-	presetMap := tool.DecodeImage(&Pixels)
-	m := model.NewMap(presetMap)
+	var plats []*model.Plat
+
+	presetMap0 := tool.DecodeImage(&Pixels, 0)
+	presetMap1 := tool.DecodeImage(&Pixels, 1)
+	m0 := model.NewMap(presetMap0)
+	m1 := model.NewMap(presetMap1)
+
+	plats = append(plats, &m0)
+	plats = append(plats, &m1)
 
 	var err error
 	address := flag.String("address", ":8001", "")
@@ -22,7 +35,7 @@ func main() {
 
 	s := rpc.NewServer()
 	s.RegisterCodec(json2.NewCustomCodec(&rpc.CompressionSelector{}), "application/json")
-	err = s.RegisterService(service.NewNodeService(&m), "NodeService")
+	err = s.RegisterService(service.NewNodeService(plats), "NodeService")
 	if err != nil {
 		panic(err)
 	}
