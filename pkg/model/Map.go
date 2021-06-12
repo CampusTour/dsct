@@ -14,7 +14,7 @@ type Plat struct {
 
 func NewMap(typeMap [][]int) (m Plat) {
 	m.points = make([][]Point, len(typeMap))
-	m.blocks = make(map[string]*Point, len(typeMap)*2)
+	m.blocks = make(map[string]*Point, len(typeMap)*len(typeMap[0]))
 	for x, row := range typeMap {
 		m.points[x] = make([]Point, len(row))
 		for y, Type := range row {

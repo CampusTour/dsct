@@ -12,8 +12,8 @@ type NodeService struct {
 	RoadCondition []map[string]int
 }
 
-func NewNodeService(thisMap []*model.Plat) *NodeService {
-	return &NodeService{Map: thisMap}
+func NewNodeService(thisMap []*model.Plat, thisRoadCondition []map[string]int) *NodeService {
+	return &NodeService{Map: thisMap, RoadCondition: thisRoadCondition}
 }
 
 type TestConnectedReq struct {
@@ -31,7 +31,7 @@ type GetRoadConditionReq struct {
 	MapIndex int `json:"map_index"`
 }
 type GetRoadConditionRes struct {
-	RoadConditions []model.RoadCondition
+	RoadConditions []model.RoadCondition `json:"road_conditions"`
 }
 
 func (c *NodeService) GetRoadCondition(r *http.Request, req *GetRoadConditionReq, res *GetRoadConditionRes) error {
@@ -52,12 +52,12 @@ func (c *NodeService) GetRoadCondition(r *http.Request, req *GetRoadConditionReq
 }
 
 type AddRoadConditionReq struct {
-	MapIndex      int `json:"map_index"`
-	RoadCondition model.RoadCondition
-	Radius        int `json:"radius"`
+	MapIndex      int                 `json:"map_index"`
+	RoadCondition model.RoadCondition `json:"road_condition"`
+	Radius        int                 `json:"radius"`
 }
 type AddRoadConditionRes struct {
-	RoadConditions []model.RoadCondition
+	RoadConditions []model.RoadCondition `json:"road_conditions"`
 }
 
 // 请求圆心的点，及拥挤区域半径
@@ -97,6 +97,7 @@ type GetRoutesRes struct {
 
 func (c *NodeService) GetRoute(r *http.Request, req *GetRoutesReq, res *GetRoutesRes) error {
 	searchRoad := model.NewSearchRoad(req.StartX, req.StartY, req.EndX, req.EndY, c.RoadCondition[req.MapIndex], c.Map[req.MapIndex])
+	//searchRoad := model.NewSearchRoad(req.StartX, req.StartY, req.EndX, req.EndY, nil, nil)
 
 	if searchRoad.FindoutRoad(req.NavigateType) {
 		fmt.Println("success")

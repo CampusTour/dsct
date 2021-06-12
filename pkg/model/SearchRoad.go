@@ -1,6 +1,9 @@
 package model
 
-import "container/heap"
+import (
+	"container/heap"
+	"math"
+)
 
 type SearchRoad struct {
 	theMap        *Plat
@@ -20,13 +23,14 @@ func NewSearchRoad(startx, starty, endx, endy int, roadCondition map[string]int,
 	sr.start = *NewAstarPoint(&Point{startx, starty, Start}, nil, nil, 0)
 	sr.end = *NewAstarPoint(&Point{endx, endy, End}, nil, nil, 0)
 	sr.TheRoad = make([]*AstarPoint, 0)
-	sr.openSet = make(map[string]*AstarPoint, m.maxX+m.maxY)
-	sr.closeLi = make(map[string]*AstarPoint, m.maxX+m.maxY)
+	sr.openSet = make(map[string]*AstarPoint)
+	sr.closeLi = make(map[string]*AstarPoint, int64(math.Pow(2, 63)))
 
 	heap.Init(&sr.openLi)
 	heap.Push(&sr.openLi, &sr.start) // 首先把起点加入开放列表
 	sr.openSet[PointAsKey(sr.start.X, sr.start.Y)] = &sr.start
 	// 将障碍点放入关闭列表
+	println(len(m.blocks))
 	for k, v := range m.blocks {
 		sr.closeLi[k] = NewAstarPoint(v, nil, nil, 0)
 	}

@@ -12,14 +12,9 @@ import (
 )
 
 func main() {
-	a := 12
-	for i := 0; i < 20; i++ {
-		a = a >> 1
-		println(a)
-	}
-
 	var Pixels [][]model.Node
 	var plats []*model.Plat
+	var roadConditions []map[string]int
 
 	presetMap0 := tool.DecodeImage(&Pixels, 0)
 	presetMap1 := tool.DecodeImage(&Pixels, 1)
@@ -29,13 +24,18 @@ func main() {
 	plats = append(plats, &m0)
 	plats = append(plats, &m1)
 
+	r0 := make(map[string]int, len(presetMap0)*len(presetMap0[0]))
+	r1 := make(map[string]int, len(presetMap1)*len(presetMap1[0]))
+	roadConditions = append(roadConditions, r0)
+	roadConditions = append(roadConditions, r1)
+
 	var err error
 	address := flag.String("address", ":8001", "")
 	flag.Parse()
 
 	s := rpc.NewServer()
 	s.RegisterCodec(json2.NewCustomCodec(&rpc.CompressionSelector{}), "application/json")
-	err = s.RegisterService(service.NewNodeService(plats), "NodeService")
+	err = s.RegisterService(service.NewNodeService(plats, roadConditions), "NodeService")
 	if err != nil {
 		panic(err)
 	}

@@ -1,8 +1,9 @@
-function getRoute(map_index, start_x, start_y, end_x, end_y) {
+function getRoute(map_index, start_x, start_y, end_x, end_y, navigate_type) {
   const req = {
     jsonrpc: "2.0",
     method: "NodeService.GetRoute",
     params: {
+      navigate_type: navigate_type,
       map_index: map_index,
       start_x: start_x,
       start_y: start_y,
@@ -24,16 +25,18 @@ function getRoute(map_index, start_x, start_y, end_x, end_y) {
     });
 }
 
-function getRoute(map_index, start_x, start_y, end_x, end_y) {
+function addRoadCondition(map_index, radius, x, y, crowd) {
   const req = {
     jsonrpc: "2.0",
-    method: "NodeService.GetRoute",
+    method: "NodeService.AddRoadCondition",
     params: {
       map_index: map_index,
-      start_x: start_x,
-      start_y: start_y,
-      end_x: end_x,
-      end_y: end_y,
+      radius: radius,
+      road_condition: {
+        x: x,
+        y: y,
+        crowd: crowd,
+      },
     },
     id: 1,
   };
@@ -46,6 +49,7 @@ function getRoute(map_index, start_x, start_y, end_x, end_y) {
   })
     .then((res) => res.json())
     .then((data) => {
-      return data.result.Road;
+      console.log(data);
+      return data.result.RoadConditions;
     });
 }

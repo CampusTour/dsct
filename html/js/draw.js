@@ -1,7 +1,3 @@
-$("#route").click(() => {
-  console.log(getRoute(535, 595, 1872, 188));
-});
-
 var stage = new Konva.Stage({
   container: "container",
   width: 2040,
@@ -51,28 +47,6 @@ stage.add(mapLayer);
 stage.add(routeLayer);
 stage.add(userLayer);
 
-$("#root").click(function (e) {
-  quit();
-  if (moving) return;
-  const point = {
-    x: Number(e.offsetX.toFixed()),
-    y: Number(e.offsetY.toFixed()),
-  };
-  console.log(point, pixels[point.x][point.y]);
-  if (pixels[point.x][point.y]) {
-    alert("此路不通！！");
-    return;
-  }
-  // path = navigateTimeFirst(current, point);
-
-  // 显示加载
-  getRoute(0, current.x, current.y, point.x, point.y).then((Road) => {
-    path = Road.map((value) => ({ x: value.X, y: value.Y })).reverse();
-    // 关闭加载
-    showPath(path);
-  });
-});
-
 function drawPoint(point, fill) {
   routeLayer.add(
     new Konva.Circle({
@@ -89,40 +63,4 @@ function showPath(points) {
   for (let point of points) {
     drawPoint(point, "#C3D7FF");
   }
-}
-
-function move() {
-  moving = true;
-  const f = () => {
-    showCurrent();
-    path.length && drawPoint((current = path.shift()), "#4784FE");
-    path.length && (current = path.shift());
-    path.length && (current = path.shift());
-    path.length && (current = path.shift());
-    if (path.length) {
-      timer = setTimeout(f, 1000 / TimeSpeed);
-    } else {
-      moving = false;
-    }
-  };
-  f();
-}
-
-function stop() {
-  clearTimeout(timer);
-}
-
-function quit() {
-  moving = false;
-  path = [];
-  clearTimeout(timer);
-  routeLayer.destroyChildren();
-  routeLayer.batchDraw();
-}
-
-function randomLocation() {
-  do {
-    current.x = (Math.random() * 2039).toFixed();
-    current.y = (Math.random() * 1445).toFixed();
-  } while (pixels[point.x][point.y]);
 }
