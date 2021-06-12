@@ -15,5 +15,3 @@ var map_index = 0;
  * 2：添加拥挤区域
  * */
 var clickMode = "0";
-
-var builds_0 = ["学生活动中心", "学生内勤管理处所"];

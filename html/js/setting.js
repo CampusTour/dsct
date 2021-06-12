@@ -12,7 +12,7 @@ function getRoute(map_index, start_x, start_y, end_x, end_y, navigate_type) {
     },
     id: 1,
   };
-  return fetch(`http://localhost/api/`, {
+  return fetch(`/api/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -40,7 +40,7 @@ function addRoadCondition(map_index, radius, x, y, crowd) {
     },
     id: 1,
   };
-  return fetch(`http://localhost/api/`, {
+  return fetch(`/api/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
