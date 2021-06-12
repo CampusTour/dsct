@@ -32,12 +32,14 @@
       <button class="float-left" id="stop">停止移动</button>
       <button class="float-left" id="quit">退出导航</button>
       <button class="float-left" id="remove-road-condition">移除拥挤</button>
-      <label class="float-left" for="input">输入目的地</label>
-      <input type="text" id="input" class="auto-inp float-left" >
+      <label class="float-left" for="building_input0">输入目的地</label>
+      <input type="text" id="building_input0" class="auto-inp float-left" >
       <div class="auto hidden" id="build_auto_0">
         <div class="auto_out"></div>
         <div class="auto_out"></div>
       </div>
+      <button class="float-left" id="building_input0_ok">确定</button>
+      <button class="float-left" id="switch-map">切换地图</button>
     </div>
   </div>
 </body>
@@ -49,8 +51,8 @@
 <script src="./js/operation.js"></script>
 <script>
   var array = ['学生活动中心', '学生内勤管理处所'];
-  var autoComplete = new AutoComplete("input","build_auto_0",array);
-  document.getElementById("input").onkeyup = function(event){
+  var autoComplete = new AutoComplete("building_input0","build_auto_0",array);
+  document.getElementById("building_input0").onkeyup = function(event){
     autoComplete.start(event);
   }
 </script>

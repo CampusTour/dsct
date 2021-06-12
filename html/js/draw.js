@@ -10,15 +10,19 @@ var userLayer = new Konva.Layer();
 var conditionLayer = new Konva.Layer(); //道路拥挤情况
 
 var mapObj = new Image();
-mapObj.src = "map(recolored).png";
+mapObj.src = map_src[map_index];
 
-mapObj.onload = function () {
+mapObj.onload = refreshMap;
+
+function refreshMap() {
+  mapObj.src = map_src[map_index];
+  mapLayer.destroyChildren();
   const map = new Konva.Image({
     image: mapObj,
   });
   mapLayer.add(map);
   mapLayer.batchDraw();
-};
+}
 
 var locObj = new Image();
 locObj.src = "location.png";

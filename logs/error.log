@@ -302,3 +302,15 @@
 2021/06/12 20:53:14 [notice] 1748#6264: signal process started
 2021/06/12 20:54:08 [notice] 18044#20080: signal process started
 2021/06/12 20:54:08 [notice] 24424#14528: signal process started
+2021/06/12 21:11:35 [notice] 25968#3472: signal process started
+2021/06/12 21:18:14 [notice] 24820#19920: signal process started
+2021/06/12 21:18:14 [error] 24820#19920: CreateFile() "D:\GitHub\dsct/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2021/06/12 21:18:59 [notice] 2328#17524: signal process started
+2021/06/12 21:18:59 [error] 2328#17524: CreateFile() "D:\GitHub\dsct/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2021/06/12 21:21:22 [notice] 16548#26396: signal process started
+2021/06/12 21:21:22 [error] 16548#26396: CreateFile() "D:\GitHub\dsct/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2021/06/12 21:21:43 [notice] 24956#26364: signal process started
+2021/06/12 21:21:43 [error] 24956#26364: OpenEvent("Global\ngx_reload_12312") failed (2: The system cannot find the file specified)
+2021/06/12 21:22:21 [notice] 3408#25312: signal process started
+2021/06/12 21:22:21 [error] 3408#25312: OpenEvent("Global\ngx_reload_1556") failed (2: The system cannot find the file specified)
+2021/06/12 21:24:43 [error] 22140#22936: *2 CreateFile() "D:\GitHub\dsct/html/favicon.ico" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "localhost", referrer: "http://localhost/"
