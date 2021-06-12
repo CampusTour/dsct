@@ -21,3 +21,4 @@ var map_src = ["map(recolored).png", "map1.png"];
  * 2：添加拥挤区域
  * */
 var clickMode = "0";
+var array = ["学生活动中心", "学生内勤管理处所"];

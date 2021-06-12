@@ -33,3 +33,11 @@ function randomLocation() {
     current.y = (Math.random() * 1445).toFixed();
   } while (pixels[point.x][point.y]);
 }
+
+function switchMap() {
+  if (map_index === 0) map_index = 1;
+  else map_index = 0;
+  current = default_positions[map_index];
+  showCurrent();
+  refreshMap();
+}

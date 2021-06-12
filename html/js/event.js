@@ -73,14 +73,9 @@ $("#remove-road-condition").click(() => {
 });
 
 $("#building_input0_ok").click(() => {
-  console.log("122");
   console.log($("#building_input0").val());
 });
 
 $("#switch-map").click(() => {
-  current = default_positions[map_index];
-  showCurrent();
-  if (map_index === 0) map_index = 1;
-  else map_index = 0;
-  refreshMap();
+  switchMap();
 });

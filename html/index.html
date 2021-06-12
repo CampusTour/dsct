@@ -50,7 +50,6 @@
 <script src="./js/event.js"></script>
 <script src="./js/operation.js"></script>
 <script>
-  var array = ['学生活动中心', '学生内勤管理处所'];
   var autoComplete = new AutoComplete("building_input0","build_auto_0",array);
   document.getElementById("building_input0").onkeyup = function(event){
     autoComplete.start(event);
