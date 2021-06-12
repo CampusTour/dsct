@@ -7,6 +7,7 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://unpkg.com/konva@4.0.0/konva.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="css/pannel.css">
   <!-- 地图 -->
   <script src="pixels.js"></script>
   <script src="./js/navigate.js"></script>
@@ -21,9 +22,15 @@
       <div id="container"></div>
     </div>
     <div style="position: relative">
-      <button style="float: left" id="move">开始移动</button>
-      <button style="float: left" id="stop">停止移动</button>
-      <button style="float: left" id="quit">退出导航</button>
+      <label class="float-left" for="now-mod">点击模式:</label>
+      <select class="float-left" id="now-mod">
+        <option value=0>点击选择目的地</option>
+        <option value=1>点击设置当前位置</option>
+        <option value=2>点击添加拥挤区域</option>
+      </select>
+      <button class="float-left" id="move">开始移动</button>
+      <button class="float-left" id="stop">停止移动</button>
+      <button class="float-left" id="quit">退出导航</button>
     </div>
   </div>
 </body>
@@ -32,9 +39,5 @@
 <script src="./js/draw.js"></script>
 <script src="./js/event.js"></script>
 <script src="./js/operation.js"></script>
-
-<!-- 操控 -->
-<script>
-</script>
 
 </html>
