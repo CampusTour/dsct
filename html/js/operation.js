@@ -2,7 +2,7 @@ function move() {
   moving = true;
   const f = () => {
     showCurrent();
-    path.length && drawPoint((current = path.shift()), "#4784FE");
+    path.length && drawPoint((current = path.shift()), "#4784FE", "routeLayer");
     path.length && (current = path.shift());
     path.length && (current = path.shift());
     path.length && (current = path.shift());

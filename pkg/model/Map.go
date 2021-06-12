@@ -7,20 +7,20 @@ import (
 
 type Plat struct {
 	points [][]Point
-	blocks map[string]*Point
+	Blocks map[string]*Point
 	maxX   int
 	maxY   int
 }
 
 func NewMap(typeMap [][]int) (m Plat) {
 	m.points = make([][]Point, len(typeMap))
-	m.blocks = make(map[string]*Point, len(typeMap)*len(typeMap[0]))
+	m.Blocks = make(map[string]*Point, len(typeMap)*len(typeMap[0]))
 	for x, row := range typeMap {
 		m.points[x] = make([]Point, len(row))
 		for y, Type := range row {
 			m.points[x][y] = Point{x, y, Type}
 			if Type == Block {
-				m.blocks[PointAsKey(x, y)] = &m.points[x][y]
+				m.Blocks[PointAsKey(x, y)] = &m.points[x][y]
 			}
 		}
 	}
@@ -87,10 +87,18 @@ func (p *Plat) GetPointByRadius(curPoint *Point, radius int, crowd int) (roadCon
 			oX := (minX + maxX) >> 1
 			oY := (minY + maxY) >> 1
 			if (x-oX)*(x-oX)+(y-oY)*(y-oY) <= radius*radius {
+				dx := x - oX
+				if dx < 0 {
+					dx = -dx
+				}
+				dy := y - oY
+				if dy < 0 {
+					dy = -dy
+				}
 				roadCondition := RoadCondition{
 					X:     x,
 					Y:     y,
-					Crowd: ((crowd - 2) >> ((x - oX) + (y - oY))) + 2,
+					Crowd: ((crowd - 2) >> (dx + dy)) + 2,
 				}
 				roadConditions = append(roadConditions, roadCondition)
 			}

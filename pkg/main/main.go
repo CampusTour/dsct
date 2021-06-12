@@ -24,8 +24,8 @@ func main() {
 	plats = append(plats, &m0)
 	plats = append(plats, &m1)
 
-	r0 := make(map[string]int, len(presetMap0)*len(presetMap0[0]))
-	r1 := make(map[string]int, len(presetMap1)*len(presetMap1[0]))
+	r0 := make(map[string]int)
+	r1 := make(map[string]int)
 	roadConditions = append(roadConditions, r0)
 	roadConditions = append(roadConditions, r1)
 

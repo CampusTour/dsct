@@ -21,7 +21,7 @@ function getRoute(map_index, start_x, start_y, end_x, end_y, navigate_type) {
   })
     .then((res) => res.json())
     .then((data) => {
-      return data.result.Road;
+      return data.result;
     });
 }
 
@@ -49,7 +49,24 @@ function addRoadCondition(map_index, radius, x, y, crowd) {
   })
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
-      return data.result.RoadConditions;
+      return data.result.road_conditions;
     });
+}
+
+function removeRoadCondition(map_index) {
+  const req = {
+    jsonrpc: "2.0",
+    method: "NodeService.RemoveRoadCondition",
+    params: {
+      map_index: map_index,
+    },
+    id: 1,
+  };
+  return fetch(`http://localhost/api/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(req),
+  });
 }

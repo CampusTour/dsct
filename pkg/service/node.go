@@ -68,6 +68,10 @@ func (c *NodeService) AddRoadCondition(r *http.Request, req *AddRoadConditionReq
 		Type: 0,
 	}, req.Radius, req.RoadCondition.Crowd)
 
+	for _, roadCondition := range roadConditions {
+		c.RoadCondition[req.MapIndex][model.PointAsKey(roadCondition.X, roadCondition.Y)] = roadCondition.Crowd
+	}
+
 	res.RoadConditions = roadConditions
 	return nil
 }
@@ -79,7 +83,7 @@ type RemoveRoadConditionRes struct {
 }
 
 func (c *NodeService) RemoveRoadCondition(r *http.Request, req *GetRoutesReq, res *GetRoutesRes) error {
-	c.RoadCondition[req.MapIndex] = nil
+	c.RoadCondition[req.MapIndex] = make(map[string]int)
 	return nil
 }
 
@@ -92,12 +96,18 @@ type GetRoutesReq struct {
 	EndY         int    `json:"end_y"`
 }
 type GetRoutesRes struct {
-	Road []model.Point
+	IsBlock bool          `json:"is_block"`
+	Road    []model.Point `json:"road"`
 }
 
 func (c *NodeService) GetRoute(r *http.Request, req *GetRoutesReq, res *GetRoutesRes) error {
+	_, ok := c.Map[req.MapIndex].Blocks[model.PointAsKey(req.EndX, req.EndY)]
+	if ok {
+		res.IsBlock = true
+		return nil
+	}
+
 	searchRoad := model.NewSearchRoad(req.StartX, req.StartY, req.EndX, req.EndY, c.RoadCondition[req.MapIndex], c.Map[req.MapIndex])
-	//searchRoad := model.NewSearchRoad(req.StartX, req.StartY, req.EndX, req.EndY, nil, nil)
 
 	if searchRoad.FindoutRoad(req.NavigateType) {
 		fmt.Println("success")

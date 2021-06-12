@@ -10,7 +10,7 @@ type SearchRoad struct {
 	start         AstarPoint
 	end           AstarPoint
 	RoadCondition map[string]int
-	closeLi       map[string]*AstarPoint
+	CloseLi       map[string]*AstarPoint
 	openLi        OpenList
 	openSet       map[string]*AstarPoint
 	TheRoad       []*AstarPoint
@@ -24,15 +24,14 @@ func NewSearchRoad(startx, starty, endx, endy int, roadCondition map[string]int,
 	sr.end = *NewAstarPoint(&Point{endx, endy, End}, nil, nil, 0)
 	sr.TheRoad = make([]*AstarPoint, 0)
 	sr.openSet = make(map[string]*AstarPoint)
-	sr.closeLi = make(map[string]*AstarPoint, int64(math.Pow(2, 63)))
+	sr.CloseLi = make(map[string]*AstarPoint, int64(math.Pow(2, 63)))
 
 	heap.Init(&sr.openLi)
 	heap.Push(&sr.openLi, &sr.start) // 首先把起点加入开放列表
 	sr.openSet[PointAsKey(sr.start.X, sr.start.Y)] = &sr.start
 	// 将障碍点放入关闭列表
-	println(len(m.blocks))
-	for k, v := range m.blocks {
-		sr.closeLi[k] = NewAstarPoint(v, nil, nil, 0)
+	for k, v := range m.Blocks {
+		sr.CloseLi[k] = NewAstarPoint(v, nil, nil, 0)
 	}
 
 	return sr
@@ -46,14 +45,15 @@ func (this *SearchRoad) FindoutRoad(navigateType string) bool {
 		x := heap.Pop(&this.openLi)
 		curPoint := x.(*AstarPoint)
 		delete(this.openSet, PointAsKey(curPoint.X, curPoint.Y))
-		this.closeLi[PointAsKey(curPoint.X, curPoint.Y)] = curPoint
+		this.CloseLi[PointAsKey(curPoint.X, curPoint.Y)] = curPoint
 
 		adjacs := this.theMap.getAdjacentPoint(&curPoint.Point)
 		for _, p := range adjacs {
 			condition, ok := this.RoadCondition[PointAsKey(p.X, p.Y)]
-			if !ok {
+			if !ok || navigateType == "DistanceFirst" {
 				condition = 0
 			}
+
 			theAP := NewAstarPoint(p, curPoint, &this.end, condition)
 			if PointAsKey(theAP.X, theAP.Y) == PointAsKey(this.end.X, this.end.Y) {
 				// 找出路径了, 标记路径
@@ -65,7 +65,7 @@ func (this *SearchRoad) FindoutRoad(navigateType string) bool {
 				return true
 			}
 
-			_, ok = this.closeLi[PointAsKey(p.X, p.Y)]
+			_, ok = this.CloseLi[PointAsKey(p.X, p.Y)]
 			if ok {
 				continue
 			}

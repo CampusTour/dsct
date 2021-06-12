@@ -55,5 +55,19 @@ func DecodeImage(Pixels *[][]model.Node, index int) (Map [][]int) {
 		Map = append(Map, nodes)
 	}
 
+	////buf, err := json.MarshalIndent(Pixels, "", "  ")
+	//buf, err := json.Marshal(Map)
+	//
+	//fileName = "pixels.js"
+	//dstFile, err := os.Create(fileName)
+	//if err != nil {
+	//	fmt.Println(err.Error())
+	//	return
+	//}
+	//defer dstFile.Close()
+	//s := "var pixels = " + string(buf)
+	//
+	//dstFile.WriteString(s)
+
 	return Map
 }
