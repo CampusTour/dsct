@@ -1,13 +1,11 @@
-var TimeSpeed = 20;
 var map_index = 0;
 var default_positions = [
   { x: 583, y: 330 },
   { x: 583, y: 330 },
 ];
 var current = default_positions[map_index];
-var moving = false;
-var path = [];
-var timer = null;
+
+var moveController = null;
 /*
  * DistanceFirst || TimeFirst
  * */

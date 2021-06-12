@@ -1,97 +1,168 @@
-var stage = new Konva.Stage({
-  container: "container",
-  width: 2040,
-  height: 1446,
-});
+const Draw = (function () {
+  let Draw = {};
+  var stage = new Konva.Stage({
+    container: "container",
+    width: 2040,
+    height: 1446,
+  });
 
-var mapLayer = new Konva.Layer(); //地图
-var routeLayer = new Konva.Layer(); //路线
-var userLayer = new Konva.Layer();
-var conditionLayer = new Konva.Layer(); //道路拥挤情况
+  var mapLayer = new Konva.Layer(); //地图
+  var routeLayer = new Konva.Layer(); //路线
+  var userLayer = new Konva.Layer();
+  var conditionLayer = new Konva.Layer(); //道路拥挤情况
 
-var mapObj = new Image();
-mapObj.src = map_src[map_index];
-
-mapObj.onload = refreshMap;
-
-function refreshMap() {
+  var mapObj = new Image();
   mapObj.src = map_src[map_index];
-  mapLayer.destroyChildren();
-  const map = new Konva.Image({
-    image: mapObj,
-  });
-  mapLayer.add(map);
-  mapLayer.batchDraw();
-}
 
-var locObj = new Image();
-locObj.src = "location.png";
-var loc;
-locObj.onload = function () {
-  loc = new Konva.Image({
-    image: locObj,
-    x: current.x - 18,
-    y: current.y - 42,
-  });
-  userLayer.add(loc);
-  userLayer.batchDraw();
-};
+  Draw.refreshMap = () => {
+    mapObj.src = map_src[map_index];
+    mapLayer.destroyChildren();
+    const map = new Konva.Image({
+      image: mapObj,
+    });
+    mapLayer.add(map);
+    mapLayer.batchDraw();
+  };
 
-function showCurrent() {
-  userLayer.destroyChildren();
-  loc = new Konva.Image({
-    image: locObj,
-    x: current.x - 18,
-    y: current.y - 42,
-  });
-  userLayer.add(loc);
-  userLayer.batchDraw();
-}
+  mapObj.onload = Draw.refreshMap;
 
-stage.add(mapLayer);
-stage.add(routeLayer);
-stage.add(userLayer);
-stage.add(conditionLayer);
+  var locObj = new Image();
+  locObj.src = "location.png";
+  var loc;
+  locObj.onload = function () {
+    loc = new Konva.Image({
+      image: locObj,
+      x: current.x - 18,
+      y: current.y - 42,
+    });
+    userLayer.add(loc);
+    userLayer.batchDraw();
+  };
 
-function drawPoint(point, fill, layer) {
-  if (layer === "routeLayer") {
-    routeLayer.add(
-      new Konva.Circle({
-        ...point,
-        fill: fill,
-        radius: 3,
-      })
-    );
-    routeLayer.batchDraw();
-  }
-  if (layer === "conditionLayer") {
-    conditionLayer.add(
-      new Konva.Circle({
-        ...point,
-        fill: "red",
-        opacity: 0.01,
-        radius: 3,
-      })
-    );
+  Draw.showCurrent = () => {
+    userLayer.destroyChildren();
+    loc = new Konva.Image({
+      image: locObj,
+      x: current.x - 18,
+      y: current.y - 42,
+    });
+    userLayer.add(loc);
+    userLayer.batchDraw();
+  };
+
+  stage.add(mapLayer);
+  stage.add(routeLayer);
+  stage.add(userLayer);
+  stage.add(conditionLayer);
+
+  Draw.drawPoint = (point, fill, layer) => {
+    if (layer === "routeLayer") {
+      routeLayer.add(
+        new Konva.Circle({
+          ...point,
+          fill: fill,
+          radius: 3,
+        })
+      );
+      routeLayer.batchDraw();
+    }
+    if (layer === "conditionLayer") {
+      conditionLayer.add(
+        new Konva.Circle({
+          ...point,
+          fill: "red",
+          opacity: 0.01,
+          radius: 3,
+        })
+      );
+      conditionLayer.batchDraw();
+    }
+  };
+
+  Draw.showPath = points => {
+    routeLayer.destroyChildren();
+    for (let point of points) {
+      Draw.drawPoint(point, "#C3D7FF", "routeLayer");
+    }
+  };
+
+  Draw.startTrip = points => {
+    let path = [...points];
+    let timer = null;
+    let playing = false;
+    let ended = false;
+
+    let end = () => {
+      Draw.clearRoute();
+      Time.offSpeedChange("startTrip");
+      clearTimeout(timer);
+      ended = true;
+    };
+
+    let Operation = () => {
+      Draw.showCurrent();
+      path.length &&
+        Draw.drawPoint((current = path.shift()), "#4784FE", "routeLayer");
+      path.length && (current = path.shift());
+      path.length && (current = path.shift());
+      path.length && (current = path.shift());
+      if (!path.length) {
+        end();
+      }
+    };
+
+    Time.onSpeedChange("startTrip", () => {
+      if (playing) {
+        clearTimeout(timer);
+        timer = setInterval(() => {
+          Operation();
+        }, 1000 / Time.getTimeSpeed());
+      }
+    });
+
+    let controller = {
+      play() {
+        if (!playing) {
+          playing = true;
+          timer = setInterval(() => {
+            Operation();
+          }, 1000 / Time.getTimeSpeed());
+        }
+      },
+      pause() {
+        if (playing) {
+          playing = false;
+          clearTimeout(timer);
+        }
+      },
+      stop() {
+        playing = false;
+        end();
+      },
+      finished() {
+        return ended;
+      },
+    };
+
+    return controller;
+  };
+
+  Draw.showRouteCondition = points => {
+    routeLayer.destroyChildren();
+    for (let point of points) {
+      Draw.drawPoint(point, point.fill, "conditionLayer");
+    }
+  };
+
+  Draw.clearRouteCondition = () => {
+    conditionLayer.destroyChildren();
     conditionLayer.batchDraw();
-  }
-}
+  };
 
-function showPath(points) {
-  routeLayer.destroyChildren();
-  for (let point of points) {
-    drawPoint(point, "#C3D7FF", "routeLayer");
-  }
-}
+  Draw.clearRoute = () => {
+    routeLayer.destroyChildren();
+    routeLayer.batchDraw();
+  };
 
-function showRouteCondition(points) {
-  routeLayer.destroyChildren();
-  for (let point of points) {
-    drawPoint(point, point.fill, "conditionLayer");
-  }
-}
-
-function clearRouteCondition() {
-  conditionLayer.destroyChildren();
-  conditionLayer.batchDraw();
-}
+  return Draw;
+})();
