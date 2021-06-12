@@ -71,3 +71,5 @@ $("#remove-road-condition").click(() => {
   removeRoadCondition(0).then((r) => {});
   clearRouteCondition();
 });
+
+$("#building_input_0").change(() => {});

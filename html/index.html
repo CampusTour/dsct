@@ -8,6 +8,7 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://unpkg.com/konva@4.0.0/konva.min.js"></script>
   <link rel="stylesheet" type="text/css" href="css/pannel.css">
+  <link rel="stylesheet" type="text/css" href="css/index.css">
   <!-- 地图 -->
   <script src="./js/navigate.js"></script>
   <script src="./js/setting.js"></script>
@@ -22,7 +23,7 @@
     </div>
     <div style="position: relative">
       <label class="float-left" for="now-mod">点击模式:</label>
-      <select class="float-left" id="now-mod">
+      <select class="auto-inp float-left" id="now-mod">
         <option value=0>点击选择目的地</option>
         <option value=1>点击设置当前位置</option>
         <option value=2>点击添加拥挤区域</option>
@@ -31,13 +32,26 @@
       <button class="float-left" id="stop">停止移动</button>
       <button class="float-left" id="quit">退出导航</button>
       <button class="float-left" id="remove-road-condition">移除拥挤</button>
+      <label class="float-left" for="building_input_0">输入目的地</label>
+      <input type="text" id="building_input_0" class="auto-inp float-left" >
+      <div class="auto hidden" id="building_auto_0">
+        <div class="auto_out"></div>
+        <div class="auto_out"></div>
+      </div>
     </div>
   </div>
 </body>
 
+<script src="./js/auto.js"></script>
 <script src="./js/variable.js"></script>
 <script src="./js/draw.js"></script>
 <script src="./js/event.js"></script>
 <script src="./js/operation.js"></script>
 
+<script>
+  var autoComplete = new AutoComplete("building_input_0","building_auto_0",builds_0);
+  document.getElementById("input").onkeyup = function(event){
+    autoComplete.start(event);
+  }
+</script>
 </html>
