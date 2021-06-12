@@ -1,7 +1,9 @@
 # Binaries for programs and plugins
+*.exe~
 *.dll
 *.so
 *.dylib
+!nginx.exe
 
 # Test binary, built with `go test -c`
 *.test
