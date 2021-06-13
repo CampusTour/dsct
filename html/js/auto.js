@@ -16,9 +16,7 @@ Array.prototype.unique = function () {
 var setClass = {
   hasClass: function (elements, cName) {
     // 判断是否含有某个class
-    return !!elements.className.match(
-      new RegExp("(\\s|^)" + cName + "(\\s|$)")
-    );
+    return elements.className.match(new RegExp("(\\s|^)" + cName + "(\\s|$)"));
   },
   addClass: function (elements, cName) {
     // 添加class

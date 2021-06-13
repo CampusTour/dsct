@@ -101,7 +101,7 @@ type GetRoutesRes struct {
 }
 
 func (c *NodeService) GetRoute(r *http.Request, req *GetRoutesReq, res *GetRoutesRes) error {
-	_, ok := c.Map[req.MapIndex].Blocks[model.PointAsKey(req.EndX, req.EndY)]
+	ok := c.Map[req.MapIndex].IsBlocked(req.EndX, req.EndY)
 	if ok {
 		res.IsBlock = true
 		return nil
@@ -120,5 +120,18 @@ func (c *NodeService) GetRoute(r *http.Request, req *GetRoutesReq, res *GetRoute
 		road = append(road, item.Point)
 	}
 	res.Road = road
+	return nil
+}
+
+type IsBlockedReq struct {
+	MapIndex     int    `json:"map_index"`
+	X int `json:"x"`
+	Y int `json:"y"`
+}
+type IsBlockedRes struct {
+	IsBlock bool   `json:"is_block"`
+}
+func (c *NodeService) IsBlocked(r *http.Request, req *IsBlockedReq, res *IsBlockedRes) error {
+	res.IsBlock = c.Map[req.MapIndex].IsBlocked(req.X, req.Y)
 	return nil
 }

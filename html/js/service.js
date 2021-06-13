@@ -1,5 +1,27 @@
 const Service = (() => {
   return {
+    async isBlocked(map_index, x, y) {
+      const req = {
+        jsonrpc: "2.0",
+        method: "NodeService.IsBlocked",
+        params: {
+          map_index,
+          x,
+          y,
+        },
+        id: 1,
+      };
+      const res = await fetch(`/api/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(req),
+      });
+      const data = await res.json();
+      return data.result;
+    },
+
     async getRoute(map_index, start_x, start_y, end_x, end_y, navigate_type) {
       const req = {
         jsonrpc: "2.0",

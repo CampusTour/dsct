@@ -108,6 +108,15 @@ func (p *Plat) GetPointByRadius(curPoint *Point, radius int, crowd int) (roadCon
 	return roadConditions
 }
 
+func (p *Plat) IsBlocked(x int, y int) bool {
+	_, ok := p.Blocks[PointAsKey(x, y)]
+	if ok {
+		return true
+	} else {
+		return false
+	}
+}
+
 func PointAsKey(x, y int) (key string) {
 	key = strconv.Itoa(x) + "," + strconv.Itoa(y)
 	return key

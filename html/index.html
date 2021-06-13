@@ -8,8 +8,6 @@
     <script src="https://unpkg.com/konva@4.0.0/konva.min.js"></script>
     <link rel="stylesheet" type="text/css" href="css/pannel.css" />
     <link rel="stylesheet" type="text/css" href="css/index.css" />
-    <!-- 地图 -->
-    <script src="./js/service.js"></script>
     <title>Document</title>
   </head>
 
@@ -51,14 +49,16 @@
   <script src="./js/event.js"></script>
   <script src="./js/operation.js"></script>
   <script src="./js/time.js"></script>
+  <script src="./js/service.js"></script>
+  <script src="./js/locations.js"></script>
   <script>
-    var autoComplete = new AutoComplete(
-      "building_input0",
-      "build_auto_0",
-      array
-    );
-    document.getElementById("building_input0").onkeyup = function (event) {
-      autoComplete.start(event);
-    };
+    // var autoComplete = new AutoComplete(
+    //   "building_input0",
+    //   "build_auto_0",
+    //   array
+    // );
+    // document.getElementById("building_input0").onkeyup = function (event) {
+    //   autoComplete.start(event);
+    // };
   </script>
 </html>
