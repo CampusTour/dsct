@@ -20,3 +20,5 @@ var map_src = ["map1_front.png", "map2_front.png"];
  * selectCrowdyPoint: 添加拥挤区域
  * */
 var clickMode = "selectDestination";
+
+var passby = false;

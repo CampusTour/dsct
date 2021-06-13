@@ -116,7 +116,7 @@ const Draw = (function () {
         clearTimeout(timer);
         timer = setInterval(() => {
           Operation();
-        }, 1000 / Time.getTimeSpeed());
+        }, 200 / Time.getTimeSpeed());
       }
     });
 
@@ -126,7 +126,7 @@ const Draw = (function () {
           playing = true;
           timer = setInterval(() => {
             Operation();
-          }, 1000 / Time.getTimeSpeed());
+          }, 200 / Time.getTimeSpeed());
         }
       },
       pause() {

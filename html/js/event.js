@@ -27,8 +27,17 @@ $("#root").click(function (e) {
       }
     });
   } else if (clickMode === "selectStartPoint") {
-    current = point;
-    Draw.showCurrent();
+    Service.isBlocked(map_index, point.x, point.y).then(res => {
+      if (res.is_block) {
+        alert("此路不通");
+        return;
+      }
+      current = point;
+      if (moveController) {
+        moveController.stop();
+      }
+      Draw.showCurrent();
+    });
   } else if (clickMode === "selectCrowdyPoint") {
     Service.addRoadCondition(map_index, 50, point.x, point.y, 2000)
       .then(road_conditions => {
