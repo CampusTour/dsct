@@ -14,16 +14,45 @@ $("#root").click(function (e) {
       }
       let dest = res.is_block ? loc : point;
       console.log("destination", dest);
-      if (!moveController || !moveController.playing()) {
-        Service.getRoute(map_index, current, dest, navigate_type).then(
-          result => {
-            path = result.road
-              .map(value => ({ x: value.X, y: value.Y }))
-              .reverse();
-            Draw.showPath(path);
-            moveController = Draw.startTrip(path);
+      if (passby) {
+        if (!midPoint) {
+          midPoint = dest;
+        } else {
+          if (!moveController || !moveController.playing()) {
+            let path1 = null;
+            let path2 = null;
+            Promise.all([
+              Service.getRoute(
+                map_index,
+                current,
+                midPoint,
+                navigate_type
+              ).then(result => {
+                path1 = result.road.map(value => ({ ...value })).reverse();
+              }),
+              Service.getRoute(map_index, midPoint, dest, navigate_type).then(
+                result => {
+                  path2 = result.road.map(value => ({ ...value })).reverse();
+                }
+              ),
+            ]).then(() => {
+              midPoint = null;
+              path = path1.concat(path2);
+              Draw.showPath(path);
+              moveController = Draw.startTrip(path);
+            });
           }
-        );
+        }
+      } else {
+        if (!moveController || !moveController.playing()) {
+          Service.getRoute(map_index, current, dest, navigate_type).then(
+            result => {
+              path = result.road.map(value => ({ ...value })).reverse();
+              Draw.showPath(path);
+              moveController = Draw.startTrip(path);
+            }
+          );
+        }
       }
     });
   } else if (clickMode === "selectStartPoint") {
@@ -96,15 +125,13 @@ $("#building_input0_ok").click(() => {
 
     if (!moveController || !moveController.playing()) {
       Service.getRoute(map_index, current, gate, navigate_type).then(result => {
-        path = result.road.map(value => ({ x: value.X, y: value.Y })).reverse();
+        path = result.road.map(value => ({ ...value })).reverse();
         Draw.showPath(path);
         moveController = Draw.startTrip(path, () => {
           Operation.switchMap();
           Service.getRoute(map_index, current, dest, navigate_type).then(
             result => {
-              path = result.road
-                .map(value => ({ x: value.X, y: value.Y }))
-                .reverse();
+              path = result.road.map(value => ({ ...value })).reverse();
               Draw.showPath(path);
               moveController = Draw.startTrip(path);
               moveController.play();
@@ -115,7 +142,45 @@ $("#building_input0_ok").click(() => {
     }
   } else if (!moveController || !moveController.playing()) {
     Service.getRoute(map_index, current, dest, navigate_type).then(result => {
-      path = result.road.map(value => ({ x: value.X, y: value.Y })).reverse();
+      path = result.road.map(value => ({ ...value })).reverse();
+      Draw.showPath(path);
+      moveController = Draw.startTrip(path);
+    });
+  }
+});
+
+$("#building_input1_ok").click(() => {
+  let course = $("#building_input1").val();
+  let dest = Location.findPointByCourse(course);
+  if (
+    (map_index === 0 && course.endsWith("(副校区)")) ||
+    (map_index === 1 && course.endsWith("(主校区)"))
+  ) {
+    let gate = [
+      { x: 14, y: 494 },
+      { x: 763, y: 266 },
+    ][map_index];
+
+    if (!moveController || !moveController.playing()) {
+      Service.getRoute(map_index, current, gate, navigate_type).then(result => {
+        path = result.road.map(value => ({ ...value })).reverse();
+        Draw.showPath(path);
+        moveController = Draw.startTrip(path, () => {
+          Operation.switchMap();
+          Service.getRoute(map_index, current, dest, navigate_type).then(
+            result => {
+              path = result.road.map(value => ({ ...value })).reverse();
+              Draw.showPath(path);
+              moveController = Draw.startTrip(path);
+              moveController.play();
+            }
+          );
+        });
+      });
+    }
+  } else if (!moveController || !moveController.playing()) {
+    Service.getRoute(map_index, current, dest, navigate_type).then(result => {
+      path = result.road.map(value => ({ ...value })).reverse();
       Draw.showPath(path);
       moveController = Draw.startTrip(path);
     });
@@ -124,4 +189,11 @@ $("#building_input0_ok").click(() => {
 
 $("#switch-map").click(() => {
   Operation.switchMap();
+});
+
+$("#passby").click(e => {
+  passby = e.target.checked;
+  if (passby) {
+    midPoint = null;
+  }
 });

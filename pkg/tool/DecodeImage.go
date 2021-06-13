@@ -36,38 +36,39 @@ func DecodeImage(Pixels *[][]model.Node, index int) (Map [][]int) {
 	}
 
 	for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x++ {
-		//var nodes []model.Node = make([]model.Node, img.Bounds().Max.X*img.Bounds().Max.Y)
+		// var nodes []model.Node = make([]model.Node, img.Bounds().Max.X*img.Bounds().Max.Y)
 		var nodes []int
 		for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y++ {
-			r, _, b, _ := img.At(x, y).RGBA()
-			//fmt.Printf("%v %v %v\n", r, g, b)
+			r, g, b, _ := img.At(x, y).RGBA()
+			// fmt.Printf("%v %v %v\n", r, g, b)
 			var tp int
-			if r != 0 && b == 0 {
-				tp = 0
+			if r == 0 && g == 0 && b == 0 {
+				tp = model.Block
+			} else if r == 62708 && g == 34438 && b == 13364 {
+				tp = model.Block
+			} else if r == 21074 && g == 53456 && b == 0 {
+				tp = model.BikeRoad
 			} else {
-				tp = 1
-			}
-			if tp != 0 && tp != 1 {
-				println(tp)
+				tp = model.BikeRoad
 			}
 			nodes = append(nodes, tp)
 		}
 		Map = append(Map, nodes)
 	}
 
-	////buf, err := json.MarshalIndent(Pixels, "", "  ")
-	//buf, err := json.Marshal(Map)
+	// //buf, err := json.MarshalIndent(Pixels, "", "  ")
+	// buf, err := json.Marshal(Map)
 	//
-	//fileName = "pixels.js"
-	//dstFile, err := os.Create(fileName)
-	//if err != nil {
+	// fileName = "pixels.js"
+	// dstFile, err := os.Create(fileName)
+	// if err != nil {
 	//	fmt.Println(err.Error())
 	//	return
-	//}
-	//defer dstFile.Close()
-	//s := "var pixels = " + string(buf)
+	// }
+	// defer dstFile.Close()
+	// s := "var pixels = " + string(buf)
 	//
-	//dstFile.WriteString(s)
+	// dstFile.WriteString(s)
 
 	return Map
 }

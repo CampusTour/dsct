@@ -1,10 +1,9 @@
 const Location = (() => {
   const scope = 40;
-  const locations = dest;
   return {
     findPointByPoint(point) {
       let near = null;
-      locations.forEach(({ point: p }) => {
+      dest.forEach(({ point: p }) => {
         targetDis = Math.abs(p.x - point.x) + Math.abs(p.y - point.y);
         if (
           (near &&
@@ -19,8 +18,15 @@ const Location = (() => {
     },
 
     findPointByBuilding(building) {
-      for (let loc of locations) {
+      for (let loc of dest) {
         if (building === loc.building) {
+          return loc.point;
+        }
+      }
+    },
+    findPointByCourse(course) {
+      for (let loc of courses) {
+        if (course === loc.course) {
           return loc.point;
         }
       }

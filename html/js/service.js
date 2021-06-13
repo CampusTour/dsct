@@ -44,6 +44,7 @@ const Service = (() => {
         body: JSON.stringify(req),
       });
       const data = await res.json();
+      console.log(data.result);
       return data.result;
     },
 

@@ -82,7 +82,11 @@ const Draw = (function () {
   Draw.showPath = points => {
     routeLayer.destroyChildren();
     for (let point of points) {
-      Draw.drawPoint(point, "#C3D7FF", "routeLayer");
+      if (point.type === 0) {
+        Draw.drawPoint(point, "#C3D7FF", "routeLayer");
+      } else if (point.type === 4) {
+        Draw.drawPoint(point, "#7bed9f", "routeLayer");
+      }
     }
   };
 

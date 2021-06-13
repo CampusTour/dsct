@@ -22,3 +22,4 @@ var map_src = ["map1_front.png", "map2_front.png"];
 var clickMode = "selectDestination";
 
 var passby = false;
+var midPoint = null;
