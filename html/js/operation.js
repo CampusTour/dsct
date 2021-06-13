@@ -15,16 +15,9 @@ const Operation = (() => {
         moveController.stop();
       }
     },
-    randomLocation() {
-      do {
-        current.x = (Math.random() * 2039).toFixed();
-        current.y = (Math.random() * 1445).toFixed();
-      } while (pixels[point.x][point.y]);
-    },
     switchMap() {
       Draw.clearRoute();
-      if (map_index === 0) map_index = 1;
-      else map_index = 0;
+      map_index = 1 - map_index;
       current = default_positions[map_index];
       Draw.showCurrent();
       Draw.refreshMap();

@@ -12,9 +12,9 @@ func DecodeImage(Pixels *[][]model.Node, index int) (Map [][]int) {
 
 	switch index {
 	case 0:
-		fileName = "map.png"
+		fileName = "map1_back.png"
 	case 1:
-		fileName = "map2.png"
+		fileName = "map2_back.png"
 	}
 
 	file, err := os.Open(fileName)

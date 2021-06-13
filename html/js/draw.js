@@ -95,7 +95,7 @@ const Draw = (function () {
       Draw.clearRoute();
       Time.offSpeedChange("startTrip");
       clearTimeout(timer);
-      callback && callback();
+      playing = false;
     };
 
     let Operation = () => {
@@ -107,6 +107,7 @@ const Draw = (function () {
       path.length && (current = path.shift());
       if (!path.length) {
         end();
+        callback && callback();
       }
     };
 
@@ -135,7 +136,6 @@ const Draw = (function () {
         }
       },
       stop() {
-        playing = false;
         end();
       },
       playing() {

@@ -2,7 +2,7 @@ var map_index = 0;
 
 var default_positions = [
   { x: 132, y: 497 },
-  { x: 583, y: 330 },
+  { x: 720, y: 261 },
 ];
 var current = default_positions[map_index];
 
@@ -12,7 +12,7 @@ var moveController = null;
  * */
 var navigate_type = "TimeFirst";
 
-var map_src = ["map1.png", "map2.png"];
+var map_src = ["map1_front.png", "map2_front.png"];
 
 /*
  * selectDestination: 点击选择目的地，并显示计算路径

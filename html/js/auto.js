@@ -121,18 +121,18 @@ AutoComplete.prototype = {
       }
       //判断数组中是否含有输入的关键字
       try {
-        var reg = new RegExp("(" + this.obj.value + ")", "i"); //输入"aaa" 则 reg = /(aaa)/i
+        var reg = this.obj.value; //输入"aaa" 则 reg = /(aaa)/i
       } catch (e) {
         alert(e.message);
       }
       var div_index = 0; //记录匹配索引个数
       for (var i = 0; i < valueArr.length; i++) {
-        if (reg.test(valueArr[i])) {
+        if (valueArr[i].includes(reg)) {
           var div = document.createElement("div");
           div.className = "auto_out";
           div.seq = valueArr[i];
           div.index = div_index;
-          div.innerHTML = valueArr[i].replace(reg, "<strong>$1</strong>");
+          div.innerHTML = valueArr[i].replace(reg, `<strong>${reg}</strong>`);
           this.autoObj.appendChild(div);
           setClass.removeClass(this.autoObj, "hidden");
           div_index++;

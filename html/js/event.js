@@ -6,31 +6,29 @@ $("#root").click(function (e) {
   console.log("click", point);
   console.log("clickMode", clickMode);
   if (clickMode === "selectDestination") {
-    let loc = Location.findPointByPoint(point);
-    if (loc || !res.is_block) {
-      let dest = loc ? loc : point;
+    Service.isBlocked(map_index, point.x, point.y).then(res => {
+      let loc = Location.findPointByPoint(point);
+      if (!loc && res.is_block) {
+        alert("此路不通");
+        return;
+      }
+      let dest = res.is_block ? loc : point;
       console.log("destination", dest);
       if (!moveController || !moveController.playing()) {
         Service.getRoute(map_index, current, dest, navigate_type).then(
           result => {
-            if (result.is_block) {
-            } else {
-              path = result.road
-                .map(value => ({ x: value.X, y: value.Y }))
-                .reverse();
-              Draw.showPath(path);
-              moveController = Draw.startTrip(path);
-            }
+            path = result.road
+              .map(value => ({ x: value.X, y: value.Y }))
+              .reverse();
+            Draw.showPath(path);
+            moveController = Draw.startTrip(path);
           }
         );
       }
-    } else {
-      alert("此路不通");
-    }
+    });
   } else if (clickMode === "selectStartPoint") {
-    current.x = point.x;
-    current.y = point.y;
-    showCurrent();
+    current = point;
+    Draw.showCurrent();
   } else if (clickMode === "selectCrowdyPoint") {
     Service.addRoadCondition(map_index, 50, point.x, point.y, 100000)
       .then(road_conditions => {
@@ -72,53 +70,39 @@ $("#building_input0_ok").click(() => {
   let building = $("#building_input0").val();
   let dest = Location.findPointByBuilding(building);
   if (
-    (map_index === 0 && building.endswith("(主校区)")) ||
-    (map_index === 1 && building.endswith("(副校区)"))
+    (map_index === 0 && building.endsWith("(副校区)")) ||
+    (map_index === 1 && building.endsWith("(主校区)"))
   ) {
+    let gate = [
+      { x: 14, y: 494 },
+      { x: 763, y: 266 },
+    ][map_index];
+
     if (!moveController || !moveController.playing()) {
-      Service.getRoute(
-        map_index,
-        current,
-        { x: 14, y: 494 },
-        navigate_type
-      ).then(result => {
-        if (result.is_block) {
-        } else {
-          path = result.road
-            .map(value => ({ x: value.X, y: value.Y }))
-            .reverse();
-          Draw.showPath(path);
-          moveController = Draw.startTrip(path, () => {
-            Operation.switchMap();
-            Service.getRoute(map_index, current, dest, navigate_type).then(
-              result => {
-                if (result.is_block) {
-                } else {
-                  path = result.road
-                    .map(value => ({ x: value.X, y: value.Y }))
-                    .reverse();
-                  Draw.showPath(path);
-                  moveController = Draw.startTrip(path, () => {});
-                }
-              }
-            );
-          });
-        }
+      Service.getRoute(map_index, current, gate, navigate_type).then(result => {
+        path = result.road.map(value => ({ x: value.X, y: value.Y })).reverse();
+        Draw.showPath(path);
+        moveController = Draw.startTrip(path, () => {
+          Operation.switchMap();
+          Service.getRoute(map_index, current, dest, navigate_type).then(
+            result => {
+              path = result.road
+                .map(value => ({ x: value.X, y: value.Y }))
+                .reverse();
+              Draw.showPath(path);
+              moveController = Draw.startTrip(path);
+              moveController.play();
+            }
+          );
+        });
       });
     }
-  } else {
-    if (!moveController || !moveController.playing()) {
-      Service.getRoute(map_index, current, dest, navigate_type).then(result => {
-        if (result.is_block) {
-        } else {
-          path = result.road
-            .map(value => ({ x: value.X, y: value.Y }))
-            .reverse();
-          Draw.showPath(path);
-          moveController = Draw.startTrip(path);
-        }
-      });
-    }
+  } else if (!moveController || !moveController.playing()) {
+    Service.getRoute(map_index, current, dest, navigate_type).then(result => {
+      path = result.road.map(value => ({ x: value.X, y: value.Y })).reverse();
+      Draw.showPath(path);
+      moveController = Draw.startTrip(path);
+    });
   }
 });
 
