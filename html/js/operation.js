@@ -22,6 +22,7 @@ const Operation = (() => {
       } while (pixels[point.x][point.y]);
     },
     switchMap() {
+      Draw.clearRoute();
       if (map_index === 0) map_index = 1;
       else map_index = 0;
       current = default_positions[map_index];

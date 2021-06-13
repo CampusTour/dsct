@@ -16,16 +16,16 @@
     <div style="padding-left: 5%; padding-right: 5%">
       <div
         id="root"
-        style="width: 100%; max-width: 2040px; height: 1000px; overflow: scroll"
+        style="width: 100%; max-width: 1294px; height: 900px; overflow: scroll"
       >
         <div id="container"></div>
       </div>
       <div style="position: relative">
         <label class="float-left" for="now-mod">点击模式:</label>
         <select class="auto-inp float-left" id="now-mod">
-          <option value="0">点击选择目的地</option>
-          <option value="1">点击设置当前位置</option>
-          <option value="2">点击添加拥挤区域</option>
+          <option value="selectDestination">点击选择目的地</option>
+          <option value="selectStartPoint">点击设置当前位置</option>
+          <option value="selectCrowdyPoint">点击添加拥挤区域</option>
         </select>
         <button class="float-left" id="move">开始移动</button>
         <button class="float-left" id="pause">停止移动</button>
@@ -41,6 +41,7 @@
         <button class="float-left" id="switch-map">切换地图</button>
       </div>
     </div>
+    <div style="height: 400px" />
   </body>
 
   <script src="./js/auto.js"></script>
@@ -50,15 +51,16 @@
   <script src="./js/operation.js"></script>
   <script src="./js/time.js"></script>
   <script src="./js/service.js"></script>
+  <script src="./js/dest.js"></script>
   <script src="./js/locations.js"></script>
   <script>
-    // var autoComplete = new AutoComplete(
-    //   "building_input0",
-    //   "build_auto_0",
-    //   array
-    // );
-    // document.getElementById("building_input0").onkeyup = function (event) {
-    //   autoComplete.start(event);
-    // };
+    var autoComplete = new AutoComplete(
+      "building_input0",
+      "build_auto_0",
+      dest.map(v => v.building)
+    );
+    document.getElementById("building_input0").onkeyup = function (event) {
+      autoComplete.start(event);
+    };
   </script>
 </html>

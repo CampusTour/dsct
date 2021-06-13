@@ -3,60 +3,47 @@ $("#root").click(function (e) {
     x: Number(e.offsetX.toFixed()),
     y: Number(e.offsetY.toFixed()),
   };
-
-  // *******
-  // Service.isBlocked(map_index, point.x, point.y).then(v => {
-  //   if (!v.is_block) {
-  //     let name = prompt();
-  //     locations.push({ point, building: name });
-  //     Draw.drawPoint(point, "#000", "routeLayer");
-  //     console.log(JSON.stringify(locations));
-  //   }
-  // });
-  // *******
-
-  // console.log(point);
-  // console.log("clickMode=" + clickMode);
-
-  // if (clickMode === "0") {
-  //   console.log("122");
-  //   if (moveController && !moveController.finished()) return;
-  //   Operation.pause();
-  //   // 显示加载
-  //   Service.getRoute(
-  //     map_index,
-  //     current.x,
-  //     current.y,
-  //     point.x,
-  //     point.y,
-  //     navigate_type
-  //   ).then(result => {
-  //     if (result.is_block) {
-  //       alert("此路不通");
-  //     } else {
-  //       path = result.road.map(value => ({ x: value.X, y: value.Y })).reverse();
-  //       // 关闭加载
-  //       Draw.showPath(path);
-  //       moveController = Draw.startTrip(path);
-  //     }
-  //   });
-  // } else if (clickMode === "1") {
-  //   current.x = point.x;
-  //   current.y = point.y;
-  //   showCurrent();
-  // } else if (clickMode === "2") {
-  //   Service.addRoadCondition(map_index, 50, point.x, point.y, 100000)
-  //     .then(road_conditions => {
-  //       return road_conditions.map(value => ({
-  //         x: value.x,
-  //         y: value.y,
-  //         fill: value.crowd,
-  //       }));
-  //     })
-  //     .then(points => {
-  //       Draw.showRouteCondition(points);
-  //     });
-  // }
+  console.log("click", point);
+  console.log("clickMode", clickMode);
+  if (clickMode === "selectDestination") {
+    let loc = Location.findPointByPoint(point);
+    if (loc || !res.is_block) {
+      let dest = loc ? loc : point;
+      console.log("destination", dest);
+      if (!moveController || !moveController.playing()) {
+        Service.getRoute(map_index, current, dest, navigate_type).then(
+          result => {
+            if (result.is_block) {
+            } else {
+              path = result.road
+                .map(value => ({ x: value.X, y: value.Y }))
+                .reverse();
+              Draw.showPath(path);
+              moveController = Draw.startTrip(path);
+            }
+          }
+        );
+      }
+    } else {
+      alert("此路不通");
+    }
+  } else if (clickMode === "selectStartPoint") {
+    current.x = point.x;
+    current.y = point.y;
+    showCurrent();
+  } else if (clickMode === "selectCrowdyPoint") {
+    Service.addRoadCondition(map_index, 50, point.x, point.y, 100000)
+      .then(road_conditions => {
+        return road_conditions.map(value => ({
+          x: value.x,
+          y: value.y,
+          fill: value.crowd,
+        }));
+      })
+      .then(points => {
+        Draw.showRouteCondition(points);
+      });
+  }
 });
 
 $("#now-mod").change(() => {
@@ -82,7 +69,57 @@ $("#remove-road-condition").click(() => {
 });
 
 $("#building_input0_ok").click(() => {
-  console.log($("#building_input0").val());
+  let building = $("#building_input0").val();
+  let dest = Location.findPointByBuilding(building);
+  if (
+    (map_index === 0 && building.endswith("(主校区)")) ||
+    (map_index === 1 && building.endswith("(副校区)"))
+  ) {
+    if (!moveController || !moveController.playing()) {
+      Service.getRoute(
+        map_index,
+        current,
+        { x: 14, y: 494 },
+        navigate_type
+      ).then(result => {
+        if (result.is_block) {
+        } else {
+          path = result.road
+            .map(value => ({ x: value.X, y: value.Y }))
+            .reverse();
+          Draw.showPath(path);
+          moveController = Draw.startTrip(path, () => {
+            Operation.switchMap();
+            Service.getRoute(map_index, current, dest, navigate_type).then(
+              result => {
+                if (result.is_block) {
+                } else {
+                  path = result.road
+                    .map(value => ({ x: value.X, y: value.Y }))
+                    .reverse();
+                  Draw.showPath(path);
+                  moveController = Draw.startTrip(path, () => {});
+                }
+              }
+            );
+          });
+        }
+      });
+    }
+  } else {
+    if (!moveController || !moveController.playing()) {
+      Service.getRoute(map_index, current, dest, navigate_type).then(result => {
+        if (result.is_block) {
+        } else {
+          path = result.road
+            .map(value => ({ x: value.X, y: value.Y }))
+            .reverse();
+          Draw.showPath(path);
+          moveController = Draw.startTrip(path);
+        }
+      });
+    }
+  }
 });
 
 $("#switch-map").click(() => {

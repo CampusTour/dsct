@@ -22,17 +22,17 @@ const Service = (() => {
       return data.result;
     },
 
-    async getRoute(map_index, start_x, start_y, end_x, end_y, navigate_type) {
+    async getRoute(map_index, start, end, navigate_type) {
       const req = {
         jsonrpc: "2.0",
         method: "NodeService.GetRoute",
         params: {
-          navigate_type: navigate_type,
-          map_index: map_index,
-          start_x: start_x,
-          start_y: start_y,
-          end_x: end_x,
-          end_y: end_y,
+          navigate_type,
+          map_index,
+          start_x: start.x,
+          start_y: start.y,
+          end_x: end.x,
+          end_y: end.y,
         },
         id: 1,
       };
@@ -82,7 +82,7 @@ const Service = (() => {
         },
         id: 1,
       };
-      return fetch(`http://localhost/api/`, {
+      return fetch(`/api/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

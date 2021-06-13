@@ -86,17 +86,16 @@ const Draw = (function () {
     }
   };
 
-  Draw.startTrip = points => {
+  Draw.startTrip = (points, callback) => {
     let path = [...points];
     let timer = null;
     let playing = false;
-    let ended = false;
 
     let end = () => {
       Draw.clearRoute();
       Time.offSpeedChange("startTrip");
       clearTimeout(timer);
-      ended = true;
+      callback && callback();
     };
 
     let Operation = () => {
@@ -139,8 +138,8 @@ const Draw = (function () {
         playing = false;
         end();
       },
-      finished() {
-        return ended;
+      playing() {
+        return playing;
       },
     };
 
