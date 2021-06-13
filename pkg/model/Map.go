@@ -98,7 +98,7 @@ func (p *Plat) GetPointByRadius(curPoint *Point, radius int, crowd int) (roadCon
 				roadCondition := RoadCondition{
 					X:     x,
 					Y:     y,
-					Crowd: ((crowd - 2) >> (dx + dy)) + 2,
+					Crowd: crowd,
 				}
 				roadConditions = append(roadConditions, roadCondition)
 			}

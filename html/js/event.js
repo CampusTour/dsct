@@ -30,7 +30,7 @@ $("#root").click(function (e) {
     current = point;
     Draw.showCurrent();
   } else if (clickMode === "selectCrowdyPoint") {
-    Service.addRoadCondition(map_index, 50, point.x, point.y, 100000)
+    Service.addRoadCondition(map_index, 50, point.x, point.y, 2000)
       .then(road_conditions => {
         return road_conditions.map(value => ({
           x: value.x,
@@ -46,6 +46,13 @@ $("#root").click(function (e) {
 
 $("#now-mod").change(() => {
   clickMode = $("#now-mod").val();
+  if (clickMode === "DistanceFirst") {
+    clickMode = "selectDestination";
+    navigate_type = "DistanceFirst";
+  } else if (clickMode === "TimeFirst") {
+    clickMode = "selectDestination";
+    navigate_type = "TimeFirst";
+  }
   console.log(clickMode);
 });
 
