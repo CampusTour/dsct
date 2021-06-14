@@ -51,9 +51,7 @@ func (this *AstarPoint) calcGVal() int {
 		} else {
 			panic("father point is invalid!")
 		}
-		if this.Point.Type == BikeRoad {
-			this.gVal /= 2
-		}
+
 	}
 	return this.gVal
 }
@@ -65,8 +63,6 @@ func (this *AstarPoint) calcHVal(end *AstarPoint) int {
 
 func (this *AstarPoint) calcFVal(end *AstarPoint, addition interface{}) int {
 	this.fVal = this.calcGVal() + this.calcHVal(end) + addition.(int)
-	if this.Point.Type == BikeRoad {
-		this.fVal /= 2
-	}
+
 	return this.fVal
 }
